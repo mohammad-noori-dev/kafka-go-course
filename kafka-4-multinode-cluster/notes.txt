@@ -1,0 +1,25 @@
+docker run -it --rm apache/kafka:4.0.0 bash
+
+docker run --rm apache/kafka:4.0.0 /opt/kafka/bin/kafka-storage.sh random-uuid
+
+docker run --rm -v $(pwd)/kafka-data:/tmp/kraft-data apache/kafka:4.0.0 /opt/kafka/bin/kafka-storage.sh format --cluster-id EaOPsmv5Ji4iwAFLJFI4g --config /opt/kafka/config/server.properties --standalone
+
+docker ps
+
+docker logs kafka-broker
+
+sudo chown -R 1000:1000 kafka-data
+
+docker exec -it kafka-1 /opt/kafka/bin/kafka-topics.sh --create --topic multi-node-test --partitions 1 --replication-factor 3 --bootstrap-server kafka-1:29092
+
+docker exec -it kafka-1 /opt/kafka/bin/kafka-topics.sh --describe --topic multi-node-test --bootstrap-server kafka-1:29092
+
+docker exec -it kafka-1 /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server kafka-1:29092
+
+docker exec -it kafka-3 /opt/kafka/bin/kafka-console-producer.sh --topic multi-node-test --bootstrap-server kafka-3:29092
+
+docker exec -it kafka-1 /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka-1:29092 --topic multi-node-test --from-beginning
+
+docker compose up -d --remove-orphans
+
+docker compose down -v
