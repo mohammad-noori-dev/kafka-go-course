@@ -20,6 +20,8 @@ docker exec -it kafka-3 /opt/kafka/bin/kafka-console-producer.sh --topic multi-n
 
 docker exec -it kafka-1 /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka-1:29092 --topic multi-node-test --from-beginning
 
+docker exec -it kafka-1 /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka-1:29092 --topic town-announcements --group analytics-group --from-beginning
+
 docker compose up -d --remove-orphans
 
 docker compose down -v
